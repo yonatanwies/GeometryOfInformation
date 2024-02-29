@@ -4,6 +4,7 @@ import torch
 import scipy.stats # for creating a simple dataset
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
+import pandas as pd
 
 # Create a simple dataset
 def create_sin_dataset(n,p):
@@ -72,13 +73,29 @@ ax[1].set_xlabel('$x_1$', fontsize=20)
 ax[1].set_ylabel('$x_2$', fontsize=20)
 ax[1].set_title('Regression output ')
 plt.tick_params(labelsize=10)
-
+# plt.show()
 
 ## Model saving / loading
+# Creating dataframes
 
+x = pd.DataFrame(X_data)
+y_test1 = pd.DataFrame(y_data)
+y_pred1 = pd.DataFrame(y_pred)
 
-model.save_checkpoint('trained_model.pt')
-model_tmp = STG(task_type='regression',input_dim=X_train.shape[1], output_dim=1, hidden_dims=[500, 50, 10], activation='tanh',
-    optimizer='SGD', learning_rate=0.1, batch_size=X_train.shape[0], feature_selection=feature_selection, sigma=0.5, lam=0.1, random_state=1, device=device)
+# Concatenating along columns and resetting indices
 
-model_tmp.load_checkpoint('trained_model.pt')
+# Resetting indices
+x.reset_index(drop=True, inplace=True)
+y_test1.reset_index(drop=True, inplace=True)
+y_pred1.reset_index(drop=True, inplace=True)
+# print(x)
+# Concatenating along columns
+concatenated_df = pd.concat([x, y_test1, y_pred1], axis=1, ignore_index=True)
+#
+print(concatenated_df)
+
+# model.save_checkpoint('trained_model.pt')
+# model_tmp = STG(task_type='regression',input_dim=X_train.shape[1], output_dim=1, hidden_dims=[500, 50, 10], activation='tanh',
+#     optimizer='SGD', learning_rate=0.1, batch_size=X_train.shape[0], feature_selection=feature_selection, sigma=0.5, lam=0.1, random_state=1, device=device)
+#
+# model_tmp.load_checkpoint('trained_model.pt')
